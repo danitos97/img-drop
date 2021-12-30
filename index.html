@@ -7,6 +7,34 @@
     <title>img-drop</title>
 </head>
 <body>
+    <style>
+        *{
+            border:0;
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:sans-serif;
+        }
+        main{
+            position:fixed;
+            height: 100%;
+            width:100%;
+            background-color: #e0ffff;
+            display: grid;
+            place-items:center;
+        }
+        
+    </style>
+
+    <main>
+        <div class="drag-drop"></div>
+    </main>
     
+
+    <script src="img-drop.js"></script>
+    <script>
+        const div = document.querySelector('.drag-drop')
+        const dragDrop = new DragDrop(div)
+    </script>
 </body>
 </html>
