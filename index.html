@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>img-drop</title>
+    <link rel="stylesheet" href="img-drop.css">
 </head>
 <body>
     <style>
@@ -23,18 +24,23 @@
             display: grid;
             place-items:center;
         }
-        
+        .img-drop{
+            width: 100%;
+            max-width: 800px;
+        }
     </style>
 
     <main>
-        <div class="drag-drop"></div>
+
+        <div class="img-drop"> </div>
+
     </main>
     
 
     <script src="img-drop.js"></script>
     <script>
-        const div = document.querySelector('.drag-drop')
-        const dragDrop = new DragDrop(div)
+        const div = document.querySelector('.img-drop')
+        const imgDrop = new ImgDrop(div)
     </script>
 </body>
 </html>
