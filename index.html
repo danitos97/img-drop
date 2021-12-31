@@ -23,6 +23,8 @@
             background-color: #e0ffff;
             display: grid;
             place-items:center;
+            padding:2px;
+            overflow-y: auto;
         }
         .img-drop{
             width: 100%;
@@ -32,15 +34,18 @@
 
     <main>
 
-        <div class="img-drop"> </div>
+        <div id="img-drop"> </div>
 
     </main>
     
 
     <script src="img-drop.js"></script>
     <script>
-        const div = document.querySelector('.img-drop')
-        const imgDrop = new ImgDrop(div)
+ 
+        const imgDrop = new ImgDrop({
+            target:'img-drop',
+            fileLimit:20
+        })
     </script>
 </body>
 </html>

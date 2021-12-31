@@ -12,10 +12,15 @@
     margin-bottom:1em;
     color:#555;
 }
-.img-drop .img-preview{
+.img-drop .preview-area{
     border:1px solid black;
+    min-height: 150px;
+    text-align: center;
 }
-.img-drop .img-preview h4{
+.img-drop .preview-area h4{
     text-align:center;
     margin:4em 0;
+}
+.img-drop .preview-area img{
+    width: 100px;
 }

@@ -7,23 +7,26 @@
 // const create = tag=>document.createElement(tag);
 
 class ImgDrop{
-
-    constructor(div){
+    
+    constructor(config){
+        
+        const self = this
+        const div = document.getElementById(config.target)
+        div.classList.add('img-drop')
 
         const dropArea = document.createElement('div')
         dropArea.classList.add('drop-area','droppable')
-        dropArea.addEventListener('click',()=> console.log('click drop'))
         
         const dropH2 = document.createElement('h2')
         dropH2.innerHTML = 'Arrastra aquí las imagenes'
         dropH2.classList.add('droppable')
         dropArea.appendChild(dropH2);
-
+        
         const dropH3 = document.createElement('h3')
         dropH3.innerHTML = 'También puedes seleccionarlas'
         dropH3.classList.add('droppable')
         dropArea.appendChild(dropH3)
-
+        
         const input = document.createElement('input')
         input.type = 'file'
         input.setAttribute('multiple','')
@@ -31,33 +34,62 @@ class ImgDrop{
         dropArea.appendChild(input)
         
         div.appendChild(dropArea)
+          
         
-
         const previewArea = document.createElement('div')
-        previewArea.classList.add('img-preview','droppable')
-        previewArea.innerHTML = '<h4 class="droppable">No hay imagenes cargadas</h4>'
-        previewArea.addEventListener('click', ()=> console.log('click pre'))
+        previewArea.classList.add('preview-area','droppable')
+        previewArea.innerHTML='<h4 class="droppable">No hay imagenes cargadas</h4>'
         div.append(previewArea)
-    
-
-        document.documentElement.addEventListener('dragover', e=>{
-            e.preventDefault();
-            let cursor = "none";
-            if(e.target.classList.contains("droppable"))
-                cursor = "move";
-            e.dataTransfer.dropEffect = cursor;
-        });
-        document.addEventListener("dragover",function(e){
-            e.preventDefault();
-            e.stopPropagation();
-        });
-        document.addEventListener("drop",function(e){
-            e.preventDefault();
-            e.stopPropagation();
-        });
+        
+        
+        document.addEventListener('dragover', e => {
+            let cursor = e.target.classList.contains("droppable")? 'move' : 'none';
+            e.dataTransfer.dropEffect = cursor
+            e.preventDefault()
+        })
+        
+        document.addEventListener("drop", e => e.preventDefault())
+        dropArea.addEventListener('drop', e => {
+            const files = e.dataTransfer.files
+            input.files = files
+            self.addImgs(files)
+        })
+        previewArea.addEventListener('drop', e => {
+            const files = e.dataTransfer.files
+            input.files = files
+            self.addImgs(files)
+        })
+        input.addEventListener('change',()=>self.addImgs(input.files))
+        
+        this.previewArea = previewArea
+        this.dropArea = dropArea
+        this.config = config
+        this.nImgs = 0
+        this.files = []
+        
 
     }
     
+    addImgs(imgs){
+        const limit = this.config.fileLimit
+        if(imgs.length > limit)
+            this.dropArea.append(`<br>Limite de ${limit} archivos alcanzado`)
+        if(this.nImgs == 0) this.previewArea.innerHTML = ''
+        this.comprimir(imgs,0)
+    }
+    comprimir(imgs,i){
+        const reader = new FileReader()
+        reader.onload = () => {
+            const img = document.createElement('img')
+            img.src = reader.result
+            this.previewArea.appendChild(img)
+            this.files.push(imgs[i])
+            if(i < imgs.length - 1 && i < this.config.fileLimit - 1)
+                this.comprimir(imgs,i + 1)
+            else console.log(this.files)
+        }
+        reader.readAsDataURL(imgs[i])
+    }
 
 }
 // const dropArea
