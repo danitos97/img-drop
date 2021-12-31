@@ -59,34 +59,49 @@ class ImgDrop{
             input.files = files
             self.addImgs(files)
         })
-        input.addEventListener('change',()=>self.addImgs(input.files))
+        input.addEventListener('change',() => self.addImgs(input.files))
         
         this.previewArea = previewArea
         this.dropArea = dropArea
         this.config = config
-        this.nImgs = 0
+        // this.nImgs = 0
         this.files = []
         
-
     }
-    
-    addImgs(imgs){
+  
+    addImgs(imgs,i){
+        if(!i) i = 0;
+        if(this.files.length == 0) this.previewArea.innerHTML = ''
         const limit = this.config.fileLimit
-        if(imgs.length > limit)
-            this.dropArea.append(`<br>Limite de ${limit} archivos alcanzado`)
-        if(this.nImgs == 0) this.previewArea.innerHTML = ''
-        this.comprimir(imgs,0)
-    }
-    comprimir(imgs,i){
+        if(this.files.length == limit){
+            this.dropArea.append(`Limite de ${limit} archivos alcanzado`)
+            return;
+        }
         const reader = new FileReader()
         reader.onload = () => {
+            const div = document.createElement('div')
+
             const img = document.createElement('img')
             img.src = reader.result
-            this.previewArea.appendChild(img)
+            div.appendChild(img)
+
+            const btnDelete = document.createElement('div')
+            btnDelete.classList.add('delete-img-preview')
+            btnDelete.innerHTML = 'X'
+            btnDelete.addEventListener('click', () => {
+                div.remove()
+                this.files = this.files.filter(value => {
+                    return value != imgs[i]
+                })
+            })
+
+            div.appendChild(btnDelete)
+        
+            this.previewArea.appendChild(div)
             this.files.push(imgs[i])
-            if(i < imgs.length - 1 && i < this.config.fileLimit - 1)
-                this.comprimir(imgs,i + 1)
-            else console.log(this.files)
+            if(i < imgs.length - 1)
+                this.addImgs(imgs,i + 1)
+            // else console.log(this.files)
         }
         reader.readAsDataURL(imgs[i])
     }
