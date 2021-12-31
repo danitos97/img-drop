@@ -1,11 +1,3 @@
-
-
-// const $=id=>{const e=document.querySelectorAll(id);return e.length==1?e[0]:e.length==0?null:[...e]}
-// EventTarget.prototype.on = EventTarget.prototype.addEventListener;
-// EventTarget.prototype.forEach = function(f){f(this)};
-// Array.prototype.on = function(ev,f){this.forEach(e=>{e.on(ev,f)})}
-// const create = tag=>document.createElement(tag);
-
 class ImgDrop{
     
     constructor(config){
@@ -64,7 +56,6 @@ class ImgDrop{
         this.previewArea = previewArea
         this.dropArea = dropArea
         this.config = config
-        // this.nImgs = 0
         this.files = []
         
     }
@@ -80,7 +71,6 @@ class ImgDrop{
         const reader = new FileReader()
         reader.onload = () => {
             const div = document.createElement('div')
-
             const img = document.createElement('img')
             img.src = reader.result
             div.appendChild(img)
@@ -94,25 +84,17 @@ class ImgDrop{
                     return value != imgs[i]
                 })
             })
-
             div.appendChild(btnDelete)
-        
+    
             this.previewArea.appendChild(div)
             this.files.push(imgs[i])
             if(i < imgs.length - 1)
                 this.addImgs(imgs,i + 1)
-            // else console.log(this.files)
+
+            else if(this.onchangeFunction)
+                this.onchangeFunction()       
         }
         reader.readAsDataURL(imgs[i])
     }
-
+    onchange(f){ this.onchangeFunction = f }
 }
-// const dropArea
-// $('.drag-drop').innerHTML = `
-//     <section id="subir-imagen">
-//     <h2>Arrastra aquí las imagenes de la nota.</h2><br>
-//     <h3>Tambien puedes seleccionarlas.</h3>
-//     <input type="file" id="img-input" name="img-input" multiple>
-//     </section><br><br>
-//     <h3 class="trapecio">Imagenes</h3><br>
-//     <section id="img-cargadas"><h4>No hay imagenes cargadas</h4></section>`

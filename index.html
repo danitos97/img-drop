@@ -9,47 +9,28 @@
 </head>
 <body>
     <style>
-        body{
-            background-color: #e0ffff;
-            margin:0;
-            text-align: center;
-            padding:50px 0;
-        }
-        #img-drop{
-            width: 850px;
-            max-width: 95vw;
-            margin:0 auto;
-        }
-        button{
-            padding:.5em 1em;
-            color:white;
-            background-color: #496F99;
-            font-size:16px;
-            font-weight:bolder;
-            cursor:pointer;
-        }
+        body{background-color: #e0ffff;margin:0;text-align: center;padding:50px 0;}
+        #img-drop{width: 850px; max-width: 95vw;margin:0 auto;}
+        button{padding:.5em 1em;color:white;background-color: #496F99;font-size:16px;font-weight:bolder;cursor:pointer; margin-top:20px;}
     </style>
 
+
     <div id="img-drop"> </div>
-
-    <br><br>
-
     <button>Enviar</button>
    
     
     <script src="img-drop.js"> </script>
-
     <script>
- 
         const imgDrop = new ImgDrop({
             target: 'img-drop',
             fileLimit: 20
         })
-
+        imgDrop.onchange(function(){
+            console.log('change detected')
+        })
         document.querySelector('button').addEventListener('click', () => {
             console.log(imgDrop.files)
         })
-
     </script>
 </body>
 </html>
