@@ -18,6 +18,12 @@
     margin-bottom:1em;
     color:#555;
 }
+.img-drop .drop-area h3{
+    color:#444;
+}
+.img-drop .drop-area input{
+    width: auto;
+}
 .img-drop .preview-area{
     border:1px solid black;
     min-height: 150px;
@@ -36,14 +42,24 @@
     position:relative;
     display: inline-block;
 }
+.img-drop .preview-area > div:hover{
+    cursor: pointer;
+}
+
 .img-drop .preview-area img{
-    
+    user-drag: none;
+    -webkit-user-drag: none;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
     width: 100%;
 }
 .img-drop .preview-area .delete-img-preview{
     position:absolute;
-    top:5px;
-    right: 5px;
+    top:15px;
+    right: 15px;
     display: inline-block;
     background-color: red;
     color:white;
@@ -56,4 +72,17 @@
 .img-drop .preview-area .delete-img-preview:hover{
     cursor:pointer;
     opacity:1;
+}
+.img-drop .preview-area .featured-img{
+    position:absolute;
+    top:0px;
+    left:0px;
+    opacity: 0
+}
+.img-drop .preview-area > div:hover .featured-img{
+    opacity: .4;
+}
+
+.img-drop .preview-area > div.featured .featured-img{
+   opacity: 1;
 }

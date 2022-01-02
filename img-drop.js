@@ -1,5 +1,7 @@
 class ImgDrop{
+    // public
     
+
     constructor(config){
         
         const self = this
@@ -22,6 +24,8 @@ class ImgDrop{
         const input = document.createElement('input')
         input.type = 'file'
         input.setAttribute('multiple','')
+        if(config.required)
+            input.setAttribute('required','')
         input.classList.add('droppable')
         dropArea.appendChild(input)
         
@@ -57,9 +61,12 @@ class ImgDrop{
         this.dropArea = dropArea
         this.config = config
         this.files = []
+        this.featuredId
+        this.featuredPreview
         
     }
   
+
     addImgs(imgs,i){
         if(!i) i = 0;
         if(this.files.length == 0) this.previewArea.innerHTML = ''
@@ -70,31 +77,74 @@ class ImgDrop{
         }
         const reader = new FileReader()
         reader.onload = () => {
-            const div = document.createElement('div')
-            const img = document.createElement('img')
-            img.src = reader.result
-            div.appendChild(img)
+            this.createPreview(reader.result,imgs[i])
 
-            const btnDelete = document.createElement('div')
-            btnDelete.classList.add('delete-img-preview')
-            btnDelete.innerHTML = 'X'
-            btnDelete.addEventListener('click', () => {
-                div.remove()
-                this.files = this.files.filter(value => {
-                    return value != imgs[i]
-                })
-            })
-            div.appendChild(btnDelete)
-    
-            this.previewArea.appendChild(div)
-            this.files.push(imgs[i])
             if(i < imgs.length - 1)
                 this.addImgs(imgs,i + 1)
 
             else if(this.onchangeFunction)
-                this.onchangeFunction()       
+                this.onchangeFunction()     
         }
         reader.readAsDataURL(imgs[i])
     }
+
+    createPreview(readerResult,original){
+        const self = this
+        const div = document.createElement('div')
+        const img = document.createElement('img')
+        img.classList.add('droppable')
+        img.src = readerResult
+        div.appendChild(img)
+
+        const btnDelete = document.createElement('div')
+        btnDelete.classList.add('delete-img-preview','droppable')
+        btnDelete.innerHTML = 'X'
+        btnDelete.addEventListener('click', e => {
+            e.stopPropagation()
+            const auxFile = self.files[self.featuredId];
+            // retorna un nuevo arreglo sin el archivo eliminado
+            self.files = self.files.filter(value=>{return value != original})
+            const featuredDeleted = div == this.featuredPreview
+            
+            // hace un offset si es necesario de la pociscion de featuredId
+            self.featuredId = featuredDeleted ? 
+                undefined : self.files.findIndex(file => file == auxFile)
+            
+            div.remove()
+        })
+        div.appendChild(btnDelete)
+
+        if(this.config.featured){
+            const btnFeatured = document.createElement('div')
+            btnFeatured.classList.add('featured-img')
+
+            btnFeatured.innerHTML = `<svg  xmlns="http://www.w3.org/2000/svg" width="64" height="64">
+                    <path fill="#fecd38" d="m32 7 8 17 17 2-12 13 3 18-16-9-16 9 3-18-12-13 17-2z"/>
+                    <path style="opacity:.2;fill:#ffffff" d="m32 7l-8 17-17 2 0.832 0.902 16.168-1.902 8-17 8 17 16.168 1.902 0.832-0.902-17-2-8-17zm-13.141 32.848l-2.859 17.152 0.184-0.104 2.816-16.896-0.141-0.152zm26.282 0l-0.141 0.152 2.816 16.896 0.184 0.104-2.859-17.152z"/>
+                    <path style="opacity:.2" d="m7.832 26.902-0.832 0.098 11.859 12.848 0.141-0.848zm48.336 0l-11.168 12.098 0.141 0.848 11.859-12.848zm-24.168 21.098-15.816 8.896-0.184 1.104 16-9 16 9-0.184-1.104z"/>
+                </svg>`
+            div.appendChild(btnFeatured)
+                
+            div.addEventListener('click',function(){
+                if(this.classList.contains('featured')) return;
+                
+                if(self.featuredPreview)
+                    self.featuredPreview.classList.remove('featured')
+        
+                self.featuredId = self.files.findIndex(file => file == original)
+                this.classList.add('featured')
+                self.featuredPreview = this
+                if(self.onpreviewclickFunction)
+                    self.onpreviewclickFunction()
+            })
+        }
+        this.previewArea.appendChild(div)
+        this.files.push(original)
+    }
+
     onchange(f){ this.onchangeFunction = f }
+
+//     onpreviewclick(f){ this.onpreviewclickFunction = f}
+
+//     triggerOnchange(){if(this.onchangeFunction) this.onchangeFunction()}
 }
