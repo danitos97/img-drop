@@ -25,8 +25,12 @@
             target: 'img-drop',
             fileLimit: 20
         })
+        imgDrop.add('../../images/lugares/105/img-0.jpg');
+        imgDrop.add('../../images/lugares/105/img-0.jpg');
+        imgDrop.add('../../images/lugares/105/img-0.jpg');
         imgDrop.onchange(function(){
             console.log('change detected')
+            console.log(imgDrop.files);
         })
         document.querySelector('button').addEventListener('click', () => {
             console.log(imgDrop.files)

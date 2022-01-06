@@ -66,7 +66,13 @@ class ImgDrop{
         this.featuredPreview;
         
     }
-  
+    async add(url){
+        const imgBlob = await (await fetch(url)).blob();
+        // this.createPreview(imgBlob,imgs[i]);
+        const file = new File([imgBlob],'img.jpg');
+        console.log(file)
+        this.addImgs([file]);
+    }
 
     addImgs(imgs,i){
         if(!i) i = 0;
