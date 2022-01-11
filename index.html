@@ -25,16 +25,16 @@
             target: 'img-drop',
             fileLimit: 20
         })
-        imgDrop.add('../../images/lugares/105/img-0.jpg');
-        imgDrop.add('../../images/lugares/105/img-0.jpg');
-        imgDrop.add('../../images/lugares/105/img-0.jpg');
+        const img ='../../images/lugares/115/img-';
+
+        imgDrop.add([img+'1.jpg', img+'2.jpg', img+'3.jpg']);
+
         imgDrop.onchange(function(){
-            console.log('change detected')
-            console.log(imgDrop.files);
+            imgDrop.setFeatured(2);
         })
-        document.querySelector('button').addEventListener('click', () => {
-            console.log(imgDrop.files)
-        })
+        // document.querySelector('button').addEventListener('click', () => {
+        //     console.log(imgDrop.files)
+        // })
     </script>
 </body>
 </html>

@@ -1,6 +1,5 @@
 class ImgDrop{
     // public
-    
 
     constructor(config){
         
@@ -66,12 +65,15 @@ class ImgDrop{
         this.featuredPreview;
         
     }
-    async add(url){
-        const imgBlob = await (await fetch(url)).blob();
-        // this.createPreview(imgBlob,imgs[i]);
-        const file = new File([imgBlob],'img.jpg');
-        console.log(file)
-        this.addImgs([file]);
+    async add(urls){
+        let files = [];
+        for(let i = 0;i < urls.length; i++){
+            const imgBlob = await (await fetch(urls[i])).blob();
+            // this.createPreview(imgBlob,imgs[i]);
+            const file = new File([imgBlob],'img.jpg');
+            files.push(file);
+        }
+        this.addImgs(files);
     }
 
     addImgs(imgs,i){
@@ -93,6 +95,10 @@ class ImgDrop{
                 this.onchangeFunction()     ;
         }
         reader.readAsDataURL(imgs[i])
+    }
+    setFeatured(i){
+        const div = this.previewArea.childNodes[i];
+        if(div) div.click();
     }
 
     createPreview(readerResult,original){
