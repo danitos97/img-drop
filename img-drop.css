@@ -78,6 +78,19 @@
     left:0px;
     opacity: 0
 }
+.img-drop .preview-area .featured-img svg{
+    width: 64px;
+}
+.img-drop .preview-area .featured-img path:nth-child(1){
+    fill:#fecd38;
+}
+.img-drop .preview-area .featured-img path:nth-child(2){
+    opacity:.2;
+    fill:#ffffff;
+}
+.img-drop .preview-area .featured-img path:nth-child(3){
+    opacity:.2;
+}
 .img-drop .preview-area > div:hover .featured-img{
     opacity: .4;
 }
