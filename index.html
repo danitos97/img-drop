@@ -25,12 +25,12 @@
             target: 'img-drop',
             fileLimit: 20
         })
-        const img ='../../images/lugares/115/img-';
+       
 
-        imgDrop.add([img+'1.jpg', img+'2.jpg', img+'3.jpg']);
-
+        
         imgDrop.onchange(function(){
-            imgDrop.setFeatured(2);
+            console.log(imgDrop.files);
+            // imgDrop.setFeatured(2);
         })
         // document.querySelector('button').addEventListener('click', () => {
         //     console.log(imgDrop.files)

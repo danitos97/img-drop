@@ -1,6 +1,15 @@
 class ImgDrop{
     // public
 
+    // config example
+    // config = {
+    //     target:'target-id',
+    //     fileLimit:20, 
+    //     featured:true,
+    //     required:true,
+    //     maxImgWidth:1280,
+    //     maxImgHeight:900
+    // }
     constructor(config){
         
         const self = this;
@@ -86,29 +95,46 @@ class ImgDrop{
         }
         const reader = new FileReader();
         reader.onload = () => {
-            this.createPreview(reader.result,imgs[i]);
 
-            if(i < imgs.length - 1)
-                this.addImgs(imgs,i + 1);
+            const img = document.createElement('img');
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, 300, 300,
+                                   0, 0,300,300);
+                const resizeImg = canvas.toDataURL(imgs[i].type);
+                // this.createPreview(reader.result,imgs[i]);
+                this.createPreview(resizeImg,imgs[i]);
+                
+                if(i < imgs.length - 1)
+                    this.addImgs(imgs,i + 1);  
 
-            else if(this.onchangeFunction)
-                this.onchangeFunction()     ;
+                else if(this.onchangeFunction)
+                    this.onchangeFunction();
+            }
+            img.src = reader.result;
         }
         reader.readAsDataURL(imgs[i])
     }
+
     setFeatured(i){
         const div = this.previewArea.childNodes[i];
         if(div) div.click();
     }
 
     createPreview(readerResult,original){
+        console.log(readerResult);
+        console.log(original);
         const self = this;
+
+
+
         const div = document.createElement('div');
         const img = document.createElement('img');
         img.classList.add('droppable');
         img.src = readerResult;
         div.appendChild(img);
-
+        
         const btnDelete = document.createElement('div');
         btnDelete.classList.add('delete-img-preview','droppable');
         btnDelete.innerHTML = 'X';
@@ -163,6 +189,7 @@ class ImgDrop{
             
         }
         self.previewArea.appendChild(div);
+
         self.files.push(original);
     }
 
