@@ -23,15 +23,16 @@
     <script>
         const imgDrop = new ImgDrop({
             target: 'img-drop',
-            fileLimit: 20
-        })
+            fileLimit: 20,
+            compression:.8
+        });
        
 
         
-        imgDrop.onchange(function(){
-            console.log(imgDrop.files);
-            // imgDrop.setFeatured(2);
-        })
+        // imgDrop.onchange(function(){
+        //     console.log(imgDrop.files);
+        //     // imgDrop.setFeatured(2);
+        // });
         // document.querySelector('button').addEventListener('click', () => {
         //     console.log(imgDrop.files)
         // })

@@ -8,7 +8,8 @@ class ImgDrop{
     //     featured:true,
     //     required:true,
     //     maxImgWidth:1280,
-    //     maxImgHeight:900
+    //     maxImgHeight:900,
+    //     compression:.8
     // }
     constructor(config){
         
@@ -50,19 +51,19 @@ class ImgDrop{
             let cursor = e.target.classList.contains("droppable")? 'move' : 'none';
             e.dataTransfer.dropEffect = cursor;
             e.preventDefault();
-        })
+        });
         
         document.addEventListener("drop", e => e.preventDefault());
         dropArea.addEventListener('drop', e => {
             const files = e.dataTransfer.files;
             input.files = files;
             self.addImgs(files);
-        })
+        });
         previewArea.addEventListener('drop', e => {
             const files = e.dataTransfer.files;
             input.files = files;
             self.addImgs(files);
-        })
+        });
         input.addEventListener('change',() => self.addImgs(input.files));
         
         this.previewArea = previewArea;
@@ -86,11 +87,12 @@ class ImgDrop{
     }
 
     addImgs(imgs,i){
+        const self = this;
         if(!i) i = 0;
-        if(this.files.length == 0) this.previewArea.innerHTML = '';
-        const limit = this.config.fileLimit;
-        if(this.files.length == limit){
-            this.dropArea.append(`Limite de ${limit} archivos alcanzado`);
+        if(self.files.length == 0) self.previewArea.innerHTML = '';
+        const limit = self.config.fileLimit;
+        if(self.files.length == limit){
+            self.dropArea.append(`Limite de ${limit} archivos alcanzado`);
             return;
         }
         const reader = new FileReader();
@@ -100,17 +102,23 @@ class ImgDrop{
             img.onload = () => {
                 const canvas = document.createElement('canvas');
                 const ctx = canvas.getContext('2d');
-                ctx.drawImage(img, 0, 0, 300, 300,
-                                   0, 0,300,300);
+                console.log('width:',img.width);
+                console.log('heigh:',img.height);
+                console.log('w:',250);
+                const height = 250 * img.height / img.width;
+                console.log('h:',height)
+                ctx.drawImage(img, 0, 0, img.width, img.height,
+                                   0, 0,250, height + 50);
                 const resizeImg = canvas.toDataURL(imgs[i].type);
                 // this.createPreview(reader.result,imgs[i]);
-                this.createPreview(resizeImg,imgs[i]);
+                canvas.toBlob(file=>self.createPreview(resizeImg,file),"image/jpeg",self.config.compression);
+                // this.createPreview(resizeImg,imgs[i]);
                 
                 if(i < imgs.length - 1)
-                    this.addImgs(imgs,i + 1);  
+                    self.addImgs(imgs,i + 1);  
 
                 else if(this.onchangeFunction)
-                    this.onchangeFunction();
+                    self.onchangeFunction();
             }
             img.src = reader.result;
         }
@@ -123,8 +131,8 @@ class ImgDrop{
     }
 
     createPreview(readerResult,original){
-        console.log(readerResult);
-        console.log(original);
+        // console.log(readerResult);
+        // console.log(original);
         const self = this;
 
 

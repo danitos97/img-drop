@@ -54,6 +54,7 @@
     -ms-user-select: none;
     user-select: none;
     width: 100%;
+    height: auto;
 }
 .img-drop .preview-area .delete-img-preview{
     position:absolute;
