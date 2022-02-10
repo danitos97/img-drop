@@ -46,7 +46,7 @@
     cursor: pointer;
 }
 
-.img-drop .preview-area img{
+.img-drop .preview-area canvas{
     -webkit-user-drag: none;
     user-select: none;
     -moz-user-select: none;
@@ -54,7 +54,6 @@
     -ms-user-select: none;
     user-select: none;
     width: 100%;
-    height: auto;
 }
 .img-drop .preview-area .delete-img-preview{
     position:absolute;

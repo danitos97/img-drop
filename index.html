@@ -24,18 +24,22 @@
         const imgDrop = new ImgDrop({
             target: 'img-drop',
             fileLimit: 20,
-            compression:.8
+            compression:.8,
+            maxWidht: 1280,
+            featured:true
         });
-       
-
-        
+    
         // imgDrop.onchange(function(){
         //     console.log(imgDrop.files);
         //     // imgDrop.setFeatured(2);
         // });
-        // document.querySelector('button').addEventListener('click', () => {
-        //     console.log(imgDrop.files)
-        // })
+        document.querySelector('button').addEventListener('click', () => {
+            const body = new FormData();
+            imgDrop.files.forEach(img => body.append("images[]",img,img.name+".jpg"));
+            fetch('upload-sample.php',{method:"POST",body:body})
+                .then(r => r.text())
+                .then(res => console.log(res));
+        })
     </script>
 </body>
 </html>

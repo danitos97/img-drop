@@ -7,8 +7,8 @@ class ImgDrop{
     //     fileLimit:20, 
     //     featured:true,
     //     required:true,
-    //     maxImgWidth:1280,
-    //     maxImgHeight:900,
+    //     maxWidth:1280,
+    //     maxHeight:900,
     //     compression:.8
     // }
     constructor(config){
@@ -56,15 +56,19 @@ class ImgDrop{
         document.addEventListener("drop", e => e.preventDefault());
         dropArea.addEventListener('drop', e => {
             const files = e.dataTransfer.files;
-            input.files = files;
             self.addImgs(files);
         });
         previewArea.addEventListener('drop', e => {
             const files = e.dataTransfer.files;
-            input.files = files;
             self.addImgs(files);
         });
-        input.addEventListener('change',() => self.addImgs(input.files));
+        input.addEventListener('change',() => {
+            if(input.files.length > 0) {
+                const files = [...input.files];
+                self.addImgs(files);
+            }
+            input.value = '';
+        });
         
         this.previewArea = previewArea;
         this.dropArea = dropArea;
@@ -97,21 +101,19 @@ class ImgDrop{
         }
         const reader = new FileReader();
         reader.onload = () => {
-
             const img = document.createElement('img');
             img.onload = () => {
                 const canvas = document.createElement('canvas');
                 const ctx = canvas.getContext('2d');
-                console.log('width:',img.width);
-                console.log('heigh:',img.height);
-                console.log('w:',250);
-                const height = 250 * img.height / img.width;
-                console.log('h:',height)
+                const aspect = img.width / img.height;
+                canvas.width = self.config.maxWidht;
+                canvas.height = canvas.width / aspect;
                 ctx.drawImage(img, 0, 0, img.width, img.height,
-                                   0, 0,250, height + 50);
-                const resizeImg = canvas.toDataURL(imgs[i].type);
+                                   0, 0,canvas.width, canvas.height);
+                // document.body.appendChild(canvas);
+                // const resizeImg = canvas.toDataURL(imgs[i].type);
                 // this.createPreview(reader.result,imgs[i]);
-                canvas.toBlob(file=>self.createPreview(resizeImg,file),"image/jpeg",self.config.compression);
+                canvas.toBlob(function(file){self.createPreview(canvas,file)},"image/jpeg",self.config.compression);
                 // this.createPreview(resizeImg,imgs[i]);
                 
                 if(i < imgs.length - 1)
@@ -130,18 +132,17 @@ class ImgDrop{
         if(div) div.click();
     }
 
-    createPreview(readerResult,original){
-        // console.log(readerResult);
-        // console.log(original);
+    createPreview(canvas,original){
+        original = new File([original],"file");
         const self = this;
 
 
 
         const div = document.createElement('div');
-        const img = document.createElement('img');
-        img.classList.add('droppable');
-        img.src = readerResult;
-        div.appendChild(img);
+        
+        canvas.classList.add('droppable');
+        // img.src = readerResult;
+        div.appendChild(canvas);
         
         const btnDelete = document.createElement('div');
         btnDelete.classList.add('delete-img-preview','droppable');
@@ -154,13 +155,16 @@ class ImgDrop{
             const featuredDeleted = div == self.featuredPreview;
             
             div.remove();
-            
+            if(self.files.length == 0)
+                self.previewArea.innerHTML='<h4 class="droppable">No hay imagenes cargadas</h4>';
+
+
             if(featuredDeleted){
                 if(self.files.length > 0){
                     self.previewArea.querySelector('div').click();
                     self.featuredId = 0;
                 }
-                else self.featuredId = undefined;
+                else  self.featuredId = undefined;
             }
             else  self.featuredId = self.files.findIndex(file => file == auxFile);
             
@@ -192,7 +196,7 @@ class ImgDrop{
                 
                 if(self.onpreviewclickFunction)
                     self.onpreviewclickFunction();
-            })
+            });
             if(!self.featuredPreview) div.click();
             
         }
