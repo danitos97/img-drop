@@ -6,7 +6,6 @@ class ImgDrop{
     //     target:'target-id',
     //     fileLimit:20, 
     //     featured:true,
-    //     required:true,
     //     maxWidth:1280,
     //     maxHeight:900,
     //     compression:.8
@@ -33,8 +32,7 @@ class ImgDrop{
         const input = document.createElement('input');
         input.type = 'file';
         input.setAttribute('multiple','');
-        if(config.required)
-            input.setAttribute('required','');
+       
         input.classList.add('droppable');
         dropArea.appendChild(input);
         
@@ -73,6 +71,7 @@ class ImgDrop{
         this.previewArea = previewArea;
         this.dropArea = dropArea;
         this.config = config;
+        if(this.config.compression == undefined)    this.config.compression = 1;
         this.input = input;
         this.files = [];
         this.featuredId;
@@ -95,7 +94,7 @@ class ImgDrop{
         if(!i) i = 0;
         if(self.files.length == 0) self.previewArea.innerHTML = '';
         const limit = self.config.fileLimit;
-        if(self.files.length == limit){
+        if(self.files.length >= limit){
             self.dropArea.append(`Limite de ${limit} archivos alcanzado`);
             return;
         }
@@ -105,15 +104,28 @@ class ImgDrop{
             img.onload = () => {
                 const canvas = document.createElement('canvas');
                 const ctx = canvas.getContext('2d');
-                const aspect = img.width / img.height;
-                canvas.width = self.config.maxWidht;
-                canvas.height = canvas.width / aspect;
-                ctx.drawImage(img, 0, 0, img.width, img.height,
-                                   0, 0,canvas.width, canvas.height);
+                if(self.config.maxWidth != undefined){
+                    const aspect = img.width / img.height;
+                    canvas.width = self.config.maxWidth;
+                    canvas.height = canvas.width / aspect;
+                }
+                else{
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                }
+
+              
+                ctx.drawImage(img, 0, 0, img.width,    img.height,
+                                   0, 0, canvas.width, canvas.height);
                 // document.body.appendChild(canvas);
                 // const resizeImg = canvas.toDataURL(imgs[i].type);
                 // this.createPreview(reader.result,imgs[i]);
-                canvas.toBlob(function(file){self.createPreview(canvas,file)},"image/jpeg",self.config.compression);
+                
+                canvas.toBlob(
+                    function(file){self.createPreview(canvas,file)},
+                    "image/jpeg",
+                    self.config.compression
+                );
                 // this.createPreview(resizeImg,imgs[i]);
                 
                 if(i < imgs.length - 1)
@@ -124,11 +136,13 @@ class ImgDrop{
             }
             img.src = reader.result;
         }
-        reader.readAsDataURL(imgs[i])
+        reader.readAsDataURL(imgs[i]);
+        console.log(imgs[i]);
     }
 
     setFeatured(i){
         const div = this.previewArea.childNodes[i];
+        console.log(div)
         if(div) div.click();
     }
 
