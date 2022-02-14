@@ -41,6 +41,7 @@
 .img-drop .preview-area > div{
     position:relative;
     display: inline-block;
+    height: min-content;
 }
 .img-drop .preview-area > div:hover{
     cursor: pointer;

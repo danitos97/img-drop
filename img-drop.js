@@ -68,7 +68,8 @@ class ImgDrop{
         this.previewArea = previewArea;
         this.dropArea = dropArea;
         this.config = config;
-        if(this.config.compression == undefined)    this.config.compression = 1;
+        if(this.config.compression == undefined) 
+            this.config.compression = .75;
         this.input = input;
         this.files = [];
         this.featuredId;
@@ -101,10 +102,18 @@ class ImgDrop{
             img.onload = () => {
                 const canvas = document.createElement('canvas');
                 const ctx = canvas.getContext('2d');
-                if(self.config.maxWidth != undefined){
-                    const aspect = img.width / img.height;
-                    canvas.width = self.config.maxWidth;
-                    canvas.height = canvas.width / aspect;
+                const maxWidth = self.config.maxWidth;
+                const maxHeight = self.config.maxHeight;
+                const aspect = img.width / img.height;
+
+                if(maxWidth && img.width > maxWidth &&
+                  (maxHeight == undefined || maxHeight > maxWidth / aspect)){
+                    canvas.width  = maxWidth;
+                    canvas.height = maxWidth / aspect;
+                }
+                else if(maxHeight && img.height > maxHeight){
+                    canvas.width  = maxHeight * aspect;
+                    canvas.height = maxHeight;
                 }
                 else{
                     canvas.width = img.width;
