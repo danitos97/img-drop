@@ -98,3 +98,21 @@
 .img-drop .preview-area > div.featured .featured-img{
    opacity: 1;
 }
+.img-drop .preview-area .size-info{
+    position:absolute;
+    bottom: 4px;
+    right: 0;
+    background-color: #000A;
+    color:#eee;
+    padding:4px 6px;
+    font-size:12px;
+    font-weight: bolder;
+}
+.img-drop .preview-area .size-info > *{
+    display:inline-block;
+    vertical-align: middle;
+}
+.img-drop .preview-area .size-info svg{
+    fill: #eee;
+    width: 16px;
+}

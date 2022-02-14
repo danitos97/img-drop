@@ -7,8 +7,7 @@ class ImgDrop{
     //     fileLimit:20, 
     //     featured:true,
     //     maxWidth:1280,
-    //     maxHeight:900,
-    //     compression:.8
+    //     compression:.75
     // }
     constructor(config){
         
@@ -37,14 +36,12 @@ class ImgDrop{
         dropArea.appendChild(input);
         
         div.appendChild(dropArea);
-          
-        
+            
         const previewArea = document.createElement('div');
         previewArea.classList.add('preview-area','droppable');
         previewArea.innerHTML='<h4 class="droppable">No hay imagenes cargadas</h4>';
         div.append(previewArea);
-        
-        
+          
         document.addEventListener('dragover', e => {
             let cursor = e.target.classList.contains("droppable")? 'move' : 'none';
             e.dataTransfer.dropEffect = cursor;
@@ -76,20 +73,20 @@ class ImgDrop{
         this.files = [];
         this.featuredId;
         this.featuredPreview;
-        
     }
+
     async add(urls){
         let files = [];
         for(let i = 0;i < urls.length; i++){
             const imgBlob = await (await fetch(urls[i])).blob();
-            // this.createPreview(imgBlob,imgs[i]);
             const file = new File([imgBlob],'img.jpg');
             files.push(file);
         }
         this.addImgs(files);
     }
-
+    
     addImgs(imgs,i){
+        
         const self = this;
         if(!i) i = 0;
         if(self.files.length == 0) self.previewArea.innerHTML = '';
@@ -114,19 +111,14 @@ class ImgDrop{
                     canvas.height = img.height;
                 }
 
-              
                 ctx.drawImage(img, 0, 0, img.width,    img.height,
                                    0, 0, canvas.width, canvas.height);
-                // document.body.appendChild(canvas);
-                // const resizeImg = canvas.toDataURL(imgs[i].type);
-                // this.createPreview(reader.result,imgs[i]);
                 
                 canvas.toBlob(
-                    function(file){self.createPreview(canvas,file)},
+                    function(file){self.createPreview(canvas,file,imgs[i].size)},
                     "image/jpeg",
                     self.config.compression
                 );
-                // this.createPreview(resizeImg,imgs[i]);
                 
                 if(i < imgs.length - 1)
                     self.addImgs(imgs,i + 1);  
@@ -137,25 +129,20 @@ class ImgDrop{
             img.src = reader.result;
         }
         reader.readAsDataURL(imgs[i]);
-        console.log(imgs[i]);
     }
 
     setFeatured(i){
         const div = this.previewArea.childNodes[i];
-        console.log(div)
         if(div) div.click();
     }
 
-    createPreview(canvas,original){
+    createPreview(canvas,original,originalSize){
         original = new File([original],"file");
         const self = this;
-
-
 
         const div = document.createElement('div');
         
         canvas.classList.add('droppable');
-        // img.src = readerResult;
         div.appendChild(canvas);
         
         const btnDelete = document.createElement('div');
@@ -171,7 +158,6 @@ class ImgDrop{
             div.remove();
             if(self.files.length == 0)
                 self.previewArea.innerHTML='<h4 class="droppable">No hay imagenes cargadas</h4>';
-
 
             if(featuredDeleted){
                 if(self.files.length > 0){
@@ -196,7 +182,6 @@ class ImgDrop{
                 </svg>`;
             div.appendChild(btnFeatured);
 
-            
             div.addEventListener('click',function(){
                 if(this.classList.contains('featured')) return;
                 
@@ -214,6 +199,24 @@ class ImgDrop{
             if(!self.featuredPreview) div.click();
             
         }
+        const arrow = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                <path d="M504.3 273.6l-112.1 104c-6.992 6.484-17.18 8.218-25.94 4.406c-8.758-3.812-14.42-12.45-14.42-21.1L351.9 288H32C14.33 288 .0002 273.7 .0002 255.1S14.33 224 32 224h319.9l0-72c0-9.547 5.66-18.19 14.42-22c8.754-3.809 18.95-2.075 25.94 4.41l112.1 104C514.6 247.9 514.6 264.1 504.3 273.6z"/>
+            </svg>`;
+        const sizeInfo = document.createElement('div');
+        sizeInfo.classList.add('size-info','droppable');
+        if(originalSize != original.size)
+        originalSize = Math.floor(originalSize / 1024);
+        let compressSize =  Math.floor(original.size / 1024);
+        if(originalSize != compressSize){
+            if(originalSize < 1024) originalSize += 'KB';
+            else originalSize = (Math.round((originalSize / 1024) * 10) / 10) + 'MB';
+            compressSize += 'KB';
+            sizeInfo.innerHTML = `<span>${originalSize}</span> ${arrow} <span>${compressSize}</span>`;
+        }
+        else sizeInfo.innerHTML = `<span>${originalSize}KB</span>`;
+        
+        div.appendChild(sizeInfo);
+
         self.previewArea.appendChild(div);
 
         self.files.push(original);
@@ -221,7 +224,4 @@ class ImgDrop{
 
     onchange(f){ this.onchangeFunction = f }
 
-//     onpreviewclick(f){ this.onpreviewclickFunction = f}
-
-//     triggerOnchange(){if(this.onchangeFunction) this.onchangeFunction()}
 }
