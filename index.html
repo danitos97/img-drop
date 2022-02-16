@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -9,9 +9,9 @@
 </head>
 <body>
     <style>
-        body{background-color: #e0ffff;margin:0;text-align: center;padding:50px 0;}
+        body{background-color: hsl(12, 50%, 80%);margin:0;text-align: center;padding:50px 0;}
         #img-drop{width: 850px; max-width: 95vw;margin:0 auto;}
-        button{padding:.5em 1em;color:white;background-color: #496F99;font-size:16px;font-weight:bolder;cursor:pointer; margin-top:20px;}
+        button{padding:.5em 1em;color:white;background-color: #F42C04;font-size:16px;font-weight:bolder;cursor:pointer; margin-top:20px;}
     </style>
 
 
@@ -21,22 +21,31 @@
     
     <script src="img-drop.js"> </script>
     <script>
+
+  
+
         const imgDrop = new ImgDrop({
             target: 'img-drop',
-            maxHeight:1280
+            maxHeight:1280,
+            validFiles: ['pdf']
         });
     
-        // imgDrop.onchange(function(){
-        //     console.log(imgDrop.files);
-        //     // imgDrop.setFeatured(2);
-        // });
+
+
+        imgDrop.onchange(function(){
+            console.log('change:',imgDrop.files);
+            // imgDrop.setFeatured(2);
+        });
+
+
         document.querySelector('button').addEventListener('click', () => {
             const body = new FormData();
             imgDrop.files.forEach(img => body.append("images[]",img,img.name+".jpg"));
             fetch('upload-sample.php',{method:"POST",body:body})
                 .then(r => r.text())
                 .then(res => console.log(res));
-        })
+        });
     </script>
+  
 </body>
 </html>

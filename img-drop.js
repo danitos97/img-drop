@@ -19,7 +19,9 @@ class ImgDrop{
         dropArea.classList.add('drop-area','droppable');
         
         const dropH2 = document.createElement('h2');
-        dropH2.innerHTML = 'Arrastra aquí las imagenes';
+        config.fileMode = config.validFiles != undefined;
+        dropH2.innerHTML=`Arrastra aquí ${config.fileMode?'los archivos':'las imagenes'}`;
+        
         dropH2.classList.add('droppable');
         dropArea.appendChild(dropH2);
         
@@ -67,9 +69,9 @@ class ImgDrop{
         
         this.previewArea = previewArea;
         this.dropArea = dropArea;
+        if(config.compression == undefined) 
+            config.compression = .75;
         this.config = config;
-        if(this.config.compression == undefined) 
-            this.config.compression = .75;
         this.input = input;
         this.files = [];
         this.featuredId;
@@ -87,15 +89,23 @@ class ImgDrop{
     }
     
     addImgs(imgs,i){
+
+        if(!i){
+            if(!this.validFiles(imgs)) {
+                alert('Tipo de archivo no valido');
+                return;
+            }
+            i = 0;
+        }
         
         const self = this;
-        if(!i) i = 0;
         if(self.files.length == 0) self.previewArea.innerHTML = '';
         const limit = self.config.fileLimit;
         if(self.files.length >= limit){
             self.dropArea.append(`Limite de ${limit} archivos alcanzado`);
             return;
         }
+        
         const reader = new FileReader();
         reader.onload = () => {
             const img = document.createElement('img');
@@ -140,6 +150,21 @@ class ImgDrop{
         reader.readAsDataURL(imgs[i]);
     }
 
+    validFiles(files){
+        const nFiles = files.length;
+        if(this.config.fileMode)
+            for(let i = 0; i < nFiles; ++i){
+                const type = files[i].type.split('/')[1];
+                if(this.config.validFiles.indexOf(type) === -1)
+                    return false;
+            }
+        else for(let i = 0; i < nFiles; ++i)
+            if(files[i].type.split('/')[0] != 'image')
+                return false;
+    
+        return true;
+    }
+
     setFeatured(i){
         const div = this.previewArea.childNodes[i];
         if(div) div.click();
@@ -177,6 +202,8 @@ class ImgDrop{
             }
             else  self.featuredId = self.files.findIndex(file => file == auxFile);
             
+            if(this.onchangeFunction)
+                self.onchangeFunction();
         })
         div.appendChild(btnDelete);
 
