@@ -9,7 +9,7 @@
 </head>
 <body>
     <style>
-        body{background-color: hsl(12, 50%, 80%);margin:0;text-align: center;padding:50px 0;}
+        body{background-color: #eeeeee;margin:0;text-align: center;padding:50px 0;}
         #img-drop{width: 850px; max-width: 95vw;margin:0 auto;}
         button{padding:.5em 1em;color:white;background-color: #F42C04;font-size:16px;font-weight:bolder;cursor:pointer; margin-top:20px;}
     </style>
@@ -20,14 +20,12 @@
    
     
     <script src="img-drop.js"> </script>
-    <script>
-
-  
-
+    <script>  
         const imgDrop = new ImgDrop({
             target: 'img-drop',
-            maxHeight:1280,
-            validFiles: ['pdf']
+            maxWidth:1280,
+            validFiles: ['pdf','docx'],
+            featured:true
         });
     
 
@@ -37,13 +35,16 @@
             // imgDrop.setFeatured(2);
         });
 
+        // imgDrop.add(['images/1645128637-1527631197.pdf']);
+        // imgDrop.add(['images/1645128637-1527631197.pdf','1645128969-2113329605.docx']);
 
-        document.querySelector('button').addEventListener('click', () => {
+        document.querySelector('button').addEventListener('click', async () => {
+            if(!imgDrop.files.length) return;
             const body = new FormData();
-            imgDrop.files.forEach(img => body.append("images[]",img,img.name+".jpg"));
-            fetch('upload-sample.php',{method:"POST",body:body})
-                .then(r => r.text())
-                .then(res => console.log(res));
+            imgDrop.files.forEach(img => body.append("images[]", img, img.name));
+            const call = await fetch('upload-sample.php', {method: "POST", body: body})
+            const res  = await call.text();
+            console.log('Archivos subidos al servidor');
         });
     </script>
   

@@ -4,7 +4,9 @@
     $time = time();
     for($i = 0; $i < $nImgs; ++$i){
         $tmp = $images["tmp_name"][$i];
-        $name = $time."-".rand().".jpg";
+        $ext = strtolower(strrchr($images["name"][$i] , '.'));  
+        $name = $time."-".rand().$ext;
         move_uploaded_file($tmp, "images/$name");
     }
+    echo print_r($images);
 ?>
