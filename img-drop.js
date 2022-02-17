@@ -169,7 +169,6 @@ class ImgDrop{
         for(let i = 0; i < nFiles; ++i){
             const name = files[i].name;
             const ext = name.substring(name.lastIndexOf('.') + 1).toLowerCase();
-            console.log(ext);
             const fileMode = this.config.fileMode;
             if((fileMode && this.config.validFiles.indexOf(ext) === -1) 
                 || (!fileMode && imgExt.indexOf(ext) === -1))
