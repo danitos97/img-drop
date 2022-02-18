@@ -104,20 +104,23 @@ class ImgDrop{
         }
         const nFiles = files.length;
         for(let i = 0; i < nFiles; ++i){
+            if(this.limitReach()) break;
             this.createPreview(null, files[i], files[i].size);
         }
 
         if(this.onchangeFunction)
             this.onchangeFunction();
     }
-
+    limitReach(){
+        const limit = this.config.fileLimit;
+        const limitReach = this.files.length >= limit
+        if(limitReach)
+            this.dropArea.append(` Limite de ${limit} archivos alcanzado`);
+        return limitReach;
+    }
     addImgs(imgs,i){
         const self = this;
-        const limit = self.config.fileLimit;
-        if(self.files.length >= limit){
-            self.dropArea.append(`Limite de ${limit} archivos alcanzado`);
-            return;
-        }
+        if(self.limitReach()) return;
         const reader = new FileReader();
         reader.onload = () => {
             const img = document.createElement('img');
