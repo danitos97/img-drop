@@ -6,7 +6,15 @@ class ImgDrop{
     //     target:'target-id',
     //     fileLimit:20, 
     //     featured:true,
-    //     maxWidth:1280,
+    //     maxWidth:1280,     
+    //     compression:.75
+    // }
+    //config = {
+    //     target:'target-id',
+    //     fileLimit:20, 
+    //     fileMode: true,
+    //     validFiles: ["pdf","doc"],
+    //     maxWidth:1280,     
     //     compression:.75
     // }
     constructor(config){
